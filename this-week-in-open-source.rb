@@ -2,13 +2,12 @@
 
 require "github_api"
 
-puts "\nThis Week In Open Source\n"
 one_week_in_seconds = 60 * 60 * 24 * 7
 github = Github.new
 owner = ARGV[0]
 repo_list = ARGV[1..]
 repo_list.each do |repo|
-  commit_list = github.repos.commits.list owner, repo, since: Time.now - (one_week_in_seconds*2)
+  commit_list = github.repos.commits.list owner, repo, since: Time.now - (one_week_in_seconds)
   commit_hash_by_author = commit_list.group_by { |commit| commit.author.login }
   next unless commit_list.any?
 
@@ -17,7 +16,7 @@ repo_list.each do |repo|
     first_commit = commits.first
     puts "#{first_commit.commit.author.name} ([#{author_handle}](#{first_commit.author.html_url}))"
     commits.each do |commit| 
-      puts "    [#{commit.sha[0...7]}](#{commit.html_url})"
+      puts "([#{commit.sha[0...7]}](#{commit.html_url}))"
     end
     puts ""
   end
